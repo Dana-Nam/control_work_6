@@ -29,6 +29,7 @@ class _TaskStateState extends State<TaskState> {
     final storedPoints = prefs.getInt('points') ?? 0;
     final parsed =
         storedTasks.map((e) => Task.fromJson(jsonDecode(e))).toList();
+
     setState(() {
       tasks = parsed;
       points = storedPoints;
@@ -37,8 +38,9 @@ class _TaskStateState extends State<TaskState> {
 
   Future<void> saveData() async {
     final prefs = await SharedPreferences.getInstance();
-    final encoded = tasks.map((t) => jsonEncode(t.toJson())).toList();
-    await prefs.setStringList('tasks', encoded);
+    final encodedTasks =
+        tasks.map((task) => jsonEncode(task.toJson())).toList();
+    await prefs.setStringList('tasks', encodedTasks);
     await prefs.setInt('points', points);
   }
 
