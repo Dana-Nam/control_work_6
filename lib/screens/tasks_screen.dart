@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/task_model.dart';
 import '../providers/task_provider.dart';
+import '../widgets/task_card.dart';
 
 class TasksScreen extends StatefulWidget {
   const TasksScreen({super.key});
@@ -19,7 +20,6 @@ class _TasksScreenState extends State<TasksScreen>
     controller = TabController(length: 2, vsync: this);
   }
 
-  @override
   @override
   Widget build(BuildContext context) {
     final provider = TaskProvider.of(context)!;
@@ -50,18 +50,32 @@ class _TasksScreenState extends State<TasksScreen>
           buildTaskList(doneTasks, isDone: true),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          await Navigator.pushNamed(context, '/create');
-          if (mounted) setState(() {});
-        },
-        child: Icon(Icons.add),
-      ),
+      floatingActionButton: newTasks.isNotEmpty
+          ? FloatingActionButton(
+              onPressed: () async {
+                await Navigator.pushNamed(context, '/create');
+                if (mounted) setState(() {});
+              },
+              child: Icon(Icons.add),
+            )
+          : null,
     );
   }
 
   Widget buildTaskList(List<Task> tasks, {required bool isDone}) {
     final provider = TaskProvider.of(context)!;
+
+    if (tasks.isEmpty && !isDone) {
+      return Center(
+        child: ElevatedButton(
+          onPressed: () async {
+            await Navigator.pushNamed(context, '/create');
+            if (mounted) setState(() {});
+          },
+          child: Text('Создать новую задачу'),
+        ),
+      );
+    }
 
     if (tasks.isEmpty) {
       return Center(child: Text('Нет задач'));
@@ -72,33 +86,18 @@ class _TasksScreenState extends State<TasksScreen>
       itemCount: tasks.length,
       itemBuilder: (context, index) {
         final task = tasks[index];
-        return Card(
-          margin: EdgeInsets.only(bottom: 16),
-          child: ListTile(
-            title: Text(task.activity),
-            subtitle: Text(task.type),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (!isDone)
-                  IconButton(
-                    icon: Icon(Icons.check, color: Colors.green),
-                    onPressed: () {
-                      provider.complete(task.key);
-                      setState(() {});
-                    },
-                  ),
-                IconButton(
-                  icon: Icon(isDone ? Icons.delete : Icons.close,
-                      color: Colors.red),
-                  onPressed: () {
-                    provider.remove(task.key);
-                    setState(() {});
-                  },
-                ),
-              ],
-            ),
-          ),
+        return TaskCard(
+          task: task,
+          onComplete: task.isDone
+              ? null
+              : () {
+                  provider.complete(task.key);
+                  setState(() {});
+                },
+          onRemove: () {
+            provider.remove(task.key);
+            setState(() {});
+          },
         );
       },
     );
