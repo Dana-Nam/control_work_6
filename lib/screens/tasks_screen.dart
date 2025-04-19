@@ -20,6 +20,7 @@ class _TasksScreenState extends State<TasksScreen>
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     final provider = TaskProvider.of(context)!;
     final newTasks = provider.tasks.where((t) => !t.isDone).toList();
@@ -50,8 +51,9 @@ class _TasksScreenState extends State<TasksScreen>
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/create');
+        onPressed: () async {
+          await Navigator.pushNamed(context, '/create');
+          if (mounted) setState(() {});
         },
         child: Icon(Icons.add),
       ),

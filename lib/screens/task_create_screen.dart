@@ -42,13 +42,17 @@ class _TaskCreateScreenState extends State<TaskCreateScreen> {
         activity: data['activity'],
         type: data['type'],
       );
+
       TaskProvider.of(context)?.add(task);
-      Navigator.push(
+
+      await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (_) => TaskDetailScreen(task: task),
         ),
       );
+
+      if (mounted) setState(() {});
     }
   }
 

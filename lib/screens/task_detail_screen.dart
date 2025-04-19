@@ -27,15 +27,17 @@ class TaskDetailScreen extends StatelessWidget {
       appBar: AppBar(title: Text('Задача')),
       body: Padding(
         padding: EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(task.activity,
-                textAlign: TextAlign.center, style: TextStyle(fontSize: 20)),
-            SizedBox(height: 24),
-            Text('Категория: ${getTypeLabel(task.type)}',
-                style: TextStyle(fontSize: 16)),
-          ],
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(task.activity,
+                  textAlign: TextAlign.center, style: TextStyle(fontSize: 20)),
+              SizedBox(height: 24),
+              Text('Категория: ${getTypeLabel(task.type)}',
+                  style: TextStyle(fontSize: 16)),
+            ],
+          ),
         ),
       ),
     );
